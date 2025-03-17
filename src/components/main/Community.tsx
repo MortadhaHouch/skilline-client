@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import fetchData from "../../../utils/fetchData";
-import { Community as CommunityType, CourseProps, PostProps } from "../../../utils/types";
+import { Community as CommunityType, CourseProps, PostProps, Quiz } from "../../../utils/types";
 import { useParams } from "react-router-dom";
 import { MdPostAdd, MdQuiz } from "react-icons/md";
 import { FaBookOpen, FaComment, FaEye, FaPlus } from "react-icons/fa";
 import NotFoundImage from '../../../public/assets/images/Oops! 404 Error with a broken robot-rafiki.svg';
 import { motion } from "framer-motion";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import { fileType } from "../../../utils/constants";
 export default function Community() {
   const [cookies] = useCookies(["auth_token"]);
   const { id } = useParams();
@@ -25,6 +26,7 @@ export default function Community() {
     page: 1,
     pages: 1,
   });
+  const [qyuiz,setQuiz] = useState<Quiz|null>(null);
   const [activeTab, setActiveTab] = useState<"posts" | "courses">("posts");
 
   const getCommunity = async () => {
@@ -102,9 +104,28 @@ export default function Community() {
   useEffect(() => {
     handleFetchData();
   }, [activeTab, handleFetchData]);
-  // const handleGenerateQuiz = ()=>{
-
+  // const handleGenerateQuiz = async(courseId:string)=>{
+  //   try {
+  //     const request = await fetchData(`/quiz/${id}/${courseId}`,"POST",{},cookies.auth_token,"json","json");
+  //     if(request.quiz){
+  //       setQuiz(request.quiz);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
   // }
+  const RenderDocument = (filename:string,courseId:string,resource:string) => {
+    const formattedFilename = filename.split(".")[filename.split(".").length - 1];
+    if(fileType.image.includes(formattedFilename)){
+      return <img src={import.meta.env.VITE_PUBLIC_REQUEST_URL+`/course/file/${id}/${courseId}/${resource}`} alt=""/>
+    }else if(fileType.video.includes(formattedFilename)){
+      return <video src={import.meta.env.VITE_PUBLIC_REQUEST_URL+`/course/file/${id}/${courseId}/${resource}`}></video>
+    }else if(fileType.pdf.includes(formattedFilename)){
+      return <iframe src={import.meta.env.VITE_PUBLIC_REQUEST_URL+`/course/file/${id}/${courseId}/${resource}`} frameBorder="0"></iframe>
+    }else{
+      return <a href={`/document/${filename}`} target="_blank" rel="noopener noreferrer">Download</a>
+    }
+  }
   return (
     <main className="flex flex-col items-center justify-start w-screen min-h-screen py-8 bg-slate-100 dark:bg-slate-900">
       {loading ? (
@@ -272,16 +293,27 @@ export default function Community() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow relative"
+                        className="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow relative flex flex-col justify-center items-center gap-2"
                       >
                         <p className={`absolute top-0 right-0 flex flex-row justify-center items-center gap-1 py-1 px-2 rounded-lg ${course.views > 0 ?'bg-green-300 dark:bg-green-600':'bg-yellow-100 dark:bg-yellow-600'}`}><span className={`${course.views > 0 ?'text-green-500':'text-yellow-500'}`}>{new Intl.NumberFormat('en-US').format(course.views||0)}</span><FaEye color={course.views > 0?'oklch(0.723 0.219 149.579)':'oklch(0.795 0.184 86.047)'}/></p>
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+                        <h3 className="w-full text-lg font-semibold text-slate-800 dark:text-slate-100">
                           {course.title}
                         </h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                        <p className="w-full text-sm text-slate-600 dark:text-slate-400 mt-2">
                           {course.description.length > 100 ? course.description.substring(0, 100)+"...":course.description}
                         </p>
-                        <div className="grid grid-cols-[50px_1fr] grid-rows-[25px_25px] items-center gap-2">
+                        <div>
+                          {
+                            course.resource.map((res,idx)=>{
+                              return (
+                                <div key={idx} className="text-slate-600 dark:text-slate-400 flex flex-row justify-center items-center gap-1 text-sm">
+                                  {RenderDocument(res,course._id,res)}
+                                </div>
+                              )
+                            })
+                          }
+                        </div>
+                        <div className="w-full grid grid-cols-[50px_1fr] grid-rows-[25px_25px] items-center gap-2">
                           <div className="row-span-2 col-start-1 row-start-1 rounded-full border-white dark:border-slate-800 bg-white dark:bg-slate-700">
                             {
                               course.author.avatar ? (

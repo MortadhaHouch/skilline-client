@@ -31,4 +31,10 @@ const userLinks = [
         icon: IoIosNotifications,
     }
 ]
-export { emailRegex,userLinks };
+const fileType = {
+    image: ["png", "jpg", "jpeg", "gif"],
+    video: ["mp4", "mov"],
+    audio: ["mp3"],
+    pdf: ["pdf"],
+};
+export { emailRegex,userLinks,fileType};
