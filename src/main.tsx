@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider } from 'react-router-dom'
 import Login from './pages/Login.tsx'
 import Signup from './pages/Signup.tsx'
 import About from './pages/About.tsx'
@@ -11,6 +11,12 @@ import Contact from './pages/Contact.tsx'
 import Dashboard from './pages/Dashboard.tsx'
 import Features from './pages/Features.tsx'
 import NotFound from './pages/NotFound.tsx'
+import MainAdminDashboard from './pages/MainAdminDashboard.tsx'
+import Profile from './pages/Profile.tsx'
+import Settings from './pages/Settings.tsx'
+import Notifications from './pages/Notifications.tsx'
+import Communities from './pages/Communities.tsx'
+import Community from './components/main/Community.tsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -18,16 +24,18 @@ const router = createBrowserRouter(
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/features" element={<Features />} />
-      {
-        JSON.parse(localStorage.getItem("isLoggedIn")||"false")?(
-          <Route path="/dashboard" element={<Dashboard />} />
-        ):(
-          <>
-            <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Signup />} />
-          </>
-        )
-      }
+      <Route path="/dashboard" element={<Dashboard />}>
+        <Route index element={<MainAdminDashboard/>}/>
+        <Route path='profile' element={<Profile/>}/>
+        <Route path='communities' element={<Outlet/>}>
+          <Route index element={<Communities/>}/>
+          <Route path=':id' element={<Community/>}/>
+        </Route>
+        <Route path='settings' element={<Settings/>}/>
+        <Route path='notifications' element={<Notifications/>}/>
+      </Route>
+      <Route path='/login' element={<Login />} />
+      <Route path='/signup' element={<Signup />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

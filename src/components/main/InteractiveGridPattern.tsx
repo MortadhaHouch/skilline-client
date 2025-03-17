@@ -3,7 +3,7 @@ import { InteractiveGridPattern as InteractiveGridPatternComponent } from "../ui
 
 export function InteractiveGridPattern({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex w-full min-h-screen flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
+    <div className="relative flex w-full min-h-screen flex-row flex-wrap items-center justify-center overflow-hidden rounded-lg border bg-background">
       <InteractiveGridPatternComponent
         className={cn(
           "absolute inset-0 w-full h-full",
@@ -11,7 +11,7 @@ export function InteractiveGridPattern({ children }: { children: React.ReactNode
           "skew-y-12"
         )}
       />
-      <div className="relative z-10">{children}</div>
+      <div className="relative w-full flex flex-row flex-wrap items-center justify-center z-10">{children}</div>
     </div>
   );
 }
