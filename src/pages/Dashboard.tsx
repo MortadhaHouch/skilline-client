@@ -39,8 +39,9 @@ const Dashboard = () => {
           index: parseInt(localStorage.getItem("index") || "0"),
           isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn") || "false"),
           avatar: localStorage.getItem("avatar") || "",
+          bio:user?.bio||"",
+          interests: user?.interests||[]
         });
-  
         if (parsedUser.success) {
           setUser(parsedUser.data);
         } else {

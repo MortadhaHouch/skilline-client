@@ -17,6 +17,7 @@ import Settings from './pages/Settings.tsx'
 import Notifications from './pages/Notifications.tsx'
 import Communities from './pages/Communities.tsx'
 import Community from './components/main/Community.tsx'
+import UserDashboard from './pages/UserDashboard.tsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -26,6 +27,16 @@ const router = createBrowserRouter(
       <Route path="/features" element={<Features />} />
       <Route path="/dashboard" element={<Dashboard />}>
         <Route index element={<MainAdminDashboard/>}/>
+        <Route path='profile' element={<Profile/>}/>
+        <Route path='communities' element={<Outlet/>}>
+          <Route index element={<Communities/>}/>
+          <Route path=':id' element={<Community/>}/>
+        </Route>
+        <Route path='settings' element={<Settings/>}/>
+        <Route path='notifications' element={<Notifications/>}/>
+      </Route>
+      <Route path="/user-dashboard" element={<Dashboard />}>
+        <Route index element={<UserDashboard/>}/>
         <Route path='profile' element={<Profile/>}/>
         <Route path='communities' element={<Outlet/>}>
           <Route index element={<Communities/>}/>

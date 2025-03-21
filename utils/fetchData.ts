@@ -54,12 +54,13 @@ export default async function fetchData(
                 return await response.json();
             case "blob":
                 return await response.blob();
-            case "formData":
+            case "formData":{
                 const formData = await response.formData();
                 return {
                     file: formData.get("file"),
                     additionalData: JSON.parse(formData.get("data") as string),
                 };
+            }
             default:
                 return response;
         }

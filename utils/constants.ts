@@ -1,7 +1,7 @@
 const emailRegex = {
     uppercase: /^[A-Z]/,
     domain: /@(gmail|yahoo|outlook)\.com$/,
-    fullMatch: /^[A-Z]+[a-z]+[A-Z]+[a-z]+@(gmail|yahoo|outlook)\.com$/,
+    fullMatch: /^[A-Za-z]+@(gmail|yahoo|outlook)\.com$/,
 };
 import { IoIosHome } from "react-icons/io";
 import { IoIosNotifications } from "react-icons/io";
@@ -32,7 +32,7 @@ const userLinks = [
     }
 ]
 const fileType = {
-    image: ["png", "jpg", "jpeg", "gif"],
+    image: ["png", "jpg", "jpeg", "gif","svg", "ico"],
     video: ["mp4", "mov"],
     audio: ["mp3"],
     pdf: ["pdf"],

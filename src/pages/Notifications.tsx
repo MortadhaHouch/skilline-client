@@ -46,7 +46,7 @@ export default function Notifications() {
                         <div
                             key={notification._id}
                             className={`w-full p-4 mb-4 rounded-lg shadow-sm ${
-                                notification.isRead ? 'bg-gray-50' : 'bg-blue-50 border-l-4 border-blue-500'
+                                notification.isRead ? 'text-extrabold' : 'bg-light border-l-4 border-blue-500'
                             }`}
                         >
                             <div className="flex items-center justify-between">
@@ -57,7 +57,7 @@ export default function Notifications() {
                                     </span>
                                 )}
                             </div>
-                            <p className="text-gray-600 dark:text-gray-100 mt-2">{notification.content}</p>
+                            <p className="bg-slate-50 dark:bg-slate-500 text-gray-600 dark:text-gray-100 mt-2">{notification.content}</p>
                             <div className="flex items-center justify-between mt-4">
                                 <div className="flex items-center space-x-2">
                                     {notification.from.avatar ? (

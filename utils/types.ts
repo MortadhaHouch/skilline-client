@@ -57,6 +57,8 @@ export const userSchema = z.object({
     avatar: z.string(),
     isLoggedIn: z.boolean(),
     index: z.number().nullable(),
+    interests: z.array(z.string()),
+    bio: z.string(),
 })
 type Post = {
     _id: string;
@@ -89,6 +91,8 @@ type Community = {
   banner: string;
   courses: number;
   _id: string;
+  isMember?:boolean;
+  isAdmin?:boolean
 }
 type Course = {
   title:string
@@ -96,7 +100,7 @@ type Course = {
   extra:string[]
   resource:string[];
   author:User
-  quizzes:Quiz[];
+  quizzes:number;
   _id: string;
   views:number
 }
@@ -105,7 +109,7 @@ type Quiz = {
     topic:string;
     creator:User
     participators:User[]
-    questions:Question
+    questions:Question[]
     difficulty:Difficulty
 }
 enum Difficulty {
@@ -121,6 +125,7 @@ type Question = {
   results:Question[]
   question:string
   time:number
+  _id: string;
 }
 enum Tab {
     POSTS = "POSTS",
@@ -131,8 +136,9 @@ type QuizProps = {
   quizzes:Quiz[],
   page: number,
   course:{
-      _id: string,
       title: string
+      description: string
+      _id?:string
   },
   pages: number
   count: number
@@ -156,5 +162,30 @@ type PostProps = {
   pages: number
   total: number
 }
-export type {CommunityStats,User,Post,Notification,Community,Course,Quiz,QuizProps,CommunityProps,CourseProps,PostProps}
-export {Role,Tab,Sort}
+type Request = {
+  from:User,
+  status:Status,
+  _id:string
+}
+enum Status {
+  PENDING="PENDING",
+  ACCEPTED="ACCEPTED",
+  REJECTED="REJECTED"
+}
+type Leaderboard = {
+  score:number
+  accuracy:number
+  count:number
+  _id:string
+  firstName:string
+  lastName:string
+  avatar:string
+  email:string
+  isMe:string
+}
+type CommentType = {
+  content:string
+  from:User
+}
+export type {Request,CommunityStats,User,Post,Notification,Community,Course,Quiz,QuizProps,CommunityProps,CourseProps,PostProps,Question,Leaderboard,CommentType}
+export {Role,Tab,Sort,Status}

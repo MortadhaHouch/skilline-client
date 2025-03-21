@@ -13,7 +13,6 @@ export default function Sidebar({ user }: { user: User }) {
       initial={{ x: -250 }}
       animate={{ x: isShown ? 0 : -250 }}
       exit={{ x: -250 }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       className="fixed top-0 left-0 w-64 h-screen flex flex-col justify-start items-center z-40 bg-slate-400 dark:bg-slate-700 backdrop-blur-lg backdrop-opacity-75 pt-20 shadow-lg"
     >
       <motion.button
