@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
 import { FaWandMagicSparkles } from "react-icons/fa6";
 import { FaCircleInfo } from "react-icons/fa6";
@@ -11,11 +11,13 @@ import { CiLogout } from "react-icons/ci";
 import { ThemeContext } from '@/providers/ThemeContext';
 import LoginContext from '@/providers/LoginContext';
 import { useCookies } from 'react-cookie';
+import fetchData from '../../../utils/fetchData';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {theme,setTheme} = useContext(ThemeContext);
-  const {isLoggedIn,setIsLoggedIn} = useContext(LoginContext)
-  const [cookies] = useCookies(["auth_token"])
+  const {setIsLoggedIn} = useContext(LoginContext)
+  const [cookies,,removeCookie] = useCookies(["auth_token"])
+  const navigate = useNavigate();
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle('dark');
     setTheme((v)=>!v);
@@ -25,9 +27,22 @@ const Header = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  const logout = () => {
-    setIsLoggedIn(false);
-    localStorage.clear()
+  const logout = async() => {
+    try {
+      const request = await fetchData("/user/logout","POST",{},cookies.auth_token,"json","json");
+      if(request.message){
+        setIsLoggedIn(false);
+        localStorage.clear();
+        removeCookie("auth_token",{
+          path: '/',
+        })
+        navigate("/login");
+      }else{
+        alert("Something went wrong")
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -41,19 +56,19 @@ const Header = () => {
       </div>
       <nav className="hidden md:flex">
         <ul className="flex items-center gap-4 md:gap-6">
-          <li><Link to="/home" className="flex flex-row items-center justify-center gap-2 nav-link"><FaHome /><span>Home</span></Link></li>
-          <li><Link to="/features" className="flex flex-row items-center justify-center gap-2 nav-link"><FaWandMagicSparkles /><span>Features</span></Link></li>
-          <li><Link to="/about" className="flex flex-row items-center justify-center gap-2 nav-link"><FaCircleInfo /><span>About</span></Link></li>
-          <li><Link to="/contact" className="flex flex-row items-center justify-center gap-2 nav-link"><FaPhoneAlt /><span>Contact</span></Link></li>
-          {isLoggedIn || cookies.auth_token ? (
+          <li><NavLink to="/home" className="flex flex-row items-center justify-center gap-2 nav-link"><FaHome /><span>Home</span></NavLink></li>
+          <li><NavLink to="/features" className="flex flex-row items-center justify-center gap-2 nav-link"><FaWandMagicSparkles /><span>Features</span></NavLink></li>
+          <li><NavLink to="/about" className="flex flex-row items-center justify-center gap-2 nav-link"><FaCircleInfo /><span>About</span></NavLink></li>
+          <li><NavLink to="/contact" className="flex flex-row items-center justify-center gap-2 nav-link"><FaPhoneAlt /><span>Contact</span></NavLink></li>
+          {JSON.parse(localStorage.getItem('isLoggedIn')||'false') && cookies.auth_token ? (
             <>
               <li><Link to="/dashboard" className="flex flex-row items-center justify-center gap-2 nav-link"><MdDashboard /><span>Dashboard</span></Link></li>
-              <li><button onClick={logout} className="flex flex-row items-center justify-center gap-2 nav-link"><CiLogout /><span>Logout</span></button></li>
+              <li><button onClick={logout} className="flex flex-row items-center justify-center gap-2 nav-link cursor-pointer py-1 px-2 rounded-lg hover:bg-red-500"><CiLogout /><span>Logout</span></button></li>
             </>
           ) : (
             <>
-              <li><Link to="/login" className="flex flex-row items-center justify-center gap-2 nav-link"><IoMdLogIn /><span>Login</span></Link></li>
-              <li><Link to="/signup" className="flex flex-row items-center justify-center gap-2 nav-link"><BiLogIn /><span>Sign Up</span></Link></li>
+              <li><NavLink to="/login" className="flex flex-row items-center justify-center gap-2 nav-link"><IoMdLogIn /><span>Login</span></NavLink></li>
+              <li><NavLink to="/signup" className="flex flex-row items-center justify-center gap-2 nav-link"><BiLogIn /><span>Sign Up</span></NavLink></li>
             </>
           )}
         </ul>
@@ -69,19 +84,19 @@ const Header = () => {
       {isMenuOpen && (
         <nav className="absolute left-0 right-0 w-full py-4 transition-transform transform shadow-md md:hidden top-full bg-slate-300 dark:bg-slate-500 backdrop-opacity-70 backdrop-blur-lg">
           <ul className="flex flex-col items-start justify-start gap-2 p-3 md:gap-6">
-            <li><Link to="/home" className="flex flex-row items-center justify-center gap-2 nav-link"><FaHome /><span>Home</span></Link></li>
-            <li><Link to="/features" className="flex flex-row items-center justify-center gap-2 nav-link"><FaWandMagicSparkles /><span>Features</span></Link></li>
-            <li><Link to="/about" className="flex flex-row items-center justify-center gap-2 nav-link"><FaCircleInfo /><span>About</span></Link></li>
-            <li><Link to="/contact" className="flex flex-row items-center justify-center gap-2 nav-link"><FaPhoneAlt /><span>Contact</span></Link></li>
-            {!isLoggedIn ? (
+            <li><NavLink to="/home" className="flex flex-row items-center justify-center gap-2 nav-link"><FaHome /><span>Home</span></NavLink></li>
+            <li><NavLink to="/features" className="flex flex-row items-center justify-center gap-2 nav-link"><FaWandMagicSparkles /><span>Features</span></NavLink></li>
+            <li><NavLink to="/about" className="flex flex-row items-center justify-center gap-2 nav-link"><FaCircleInfo /><span>About</span></NavLink></li>
+            <li><NavLink to="/contact" className="flex flex-row items-center justify-center gap-2 nav-link"><FaPhoneAlt /><span>Contact</span></NavLink></li>
+            {JSON.parse(localStorage.getItem('isLoggedIn')||'false') && cookies.auth_token ? (
               <>
-                <li><Link to="/login" className="flex flex-row items-center justify-center gap-2 nav-link"><IoMdLogIn /><span>Login</span></Link></li>
-                <li><Link to="/signup" className="flex flex-row items-center justify-center gap-2 nav-link"><BiLogIn /><span>Sign Up</span></Link></li>
+                <li><NavLink to="/dashboard" className="flex flex-row items-center justify-center gap-2 nav-link"><MdDashboard /><span>Dashboard</span></NavLink></li>
+                <li><button onClick={logout} className="flex flex-row items-center justify-center gap-2 nav-link"><CiLogout /><span>Logout</span></button></li>
               </>
             ) : (
               <>
-                <li><Link to="/dashboard" className="flex flex-row items-center justify-center gap-2 nav-link"><MdDashboard /><span>Dashboard</span></Link></li>
-                <li><button onClick={logout} className="flex flex-row items-center justify-center gap-2 nav-link"><CiLogout /><span>Logout</span></button></li>
+                <li><NavLink to="/login" className="flex flex-row items-center justify-center gap-2 nav-link"><IoMdLogIn /><span>Login</span></NavLink></li>
+                <li><NavLink to="/signup" className="flex flex-row items-center justify-center gap-2 nav-link"><BiLogIn /><span>Sign Up</span></NavLink></li>
               </>
             )}
           </ul>

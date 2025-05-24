@@ -16,6 +16,10 @@ const Login = () => {
   const {setIsLoggedIn} = useContext(LoginContext);
   const [,setCookie] = useCookies(["auth_token"])
   const navigate = useNavigate();
+  if(JSON.parse(localStorage.getItem("isLoggedIn")||"false")){
+    navigate("/dashboard");
+    return;
+  }
   const onSubmit =async (data: FieldValues) => {
       reset();
       try {
@@ -43,7 +47,8 @@ const Login = () => {
           localStorage.setItem("isLoggedIn",JSON.stringify(true));
           setCookie("auth_token",request.token,{
             path:"/",
-            expires:new Date(Date.now() + 7 * 60 * 60 * 1000)
+            expires:new Date(Date.now() + 7 * 60 * 60 * 1000),
+            maxAge:7 * 60 * 60 * 1000
           })
           navigate("/dashboard");
         }

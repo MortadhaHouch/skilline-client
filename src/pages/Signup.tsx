@@ -1,5 +1,5 @@
 import { FieldValues, useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import { emailRegex } from '../../utils/constants';
 import fetchData from "../../utils/fetchData"
 import { useCookies } from 'react-cookie';
@@ -16,6 +16,10 @@ const Signup = () => {
   const [,setCookie] = useCookies(["auth_token"])
   const {setIsLoggedIn} = useContext(LoginContext);
   const navigate = useNavigate();
+  if(JSON.parse(localStorage.getItem("isLoggedIn")||"false")){
+    navigate("/dashboard");
+    return;
+  }
   const onSubmit =async (data: FieldValues) => {
     reset();
     try {
@@ -49,9 +53,10 @@ const Signup = () => {
         localStorage.setItem("isLoggedIn",JSON.stringify(true));
         setCookie("auth_token",request.token,{
           path:"/",
-          expires:new Date(Date.now() + 7 * 60 * 60 * 1000)
+          expires:new Date(Date.now() + 7 * 60 * 60 * 1000),
+          maxAge:7 * 60 * 60 * 1000
         })
-        navigate("/dashboard");
+        redirect("/dashboard")
       }
     } catch (error) {
       console.log(error);

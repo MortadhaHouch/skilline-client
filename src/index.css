@@ -1,14 +1,13 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(0.975 0 0); /* Slightly greyish white */
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card: oklch(0.98 0.02 0.05); /* Light greyish color for cards */
+  --card-foreground: oklch(0.145 0 0); /* Dark text for card content */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -41,10 +40,10 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.22 0 0); /* Lighter dark background */
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0.05 0.05); /* Darker card background */
+  --card-foreground: oklch(0.985 0.08 0); /* Lighter card foreground */
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.985 0 0);
@@ -120,5 +119,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .card {
+    @apply bg-card text-card-foreground shadow-lg rounded-md p-4;
+  }
+  .card:hover {
+    @apply shadow-xl;
   }
 }
